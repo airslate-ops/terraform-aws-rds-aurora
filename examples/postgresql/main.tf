@@ -32,8 +32,9 @@ module "aurora" {
   storage_type    = "aurora-iopt1"
   instances = {
     1 = {
-      instance_class      = "db.r5.2xlarge"
-      publicly_accessible = true
+      instance_class          = "db.r5.2xlarge"
+      publicly_accessible     = true
+      db_parameter_group_name = "default.aurora-postgresql14"
     }
     2 = {
       identifier     = "static-member-1"
@@ -107,6 +108,10 @@ module "aurora" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
   create_cloudwatch_log_group     = true
 
+  create_db_cluster_activity_stream     = true
+  db_cluster_activity_stream_kms_key_id = module.kms.key_id
+  db_cluster_activity_stream_mode       = "async"
+
   tags = local.tags
 }
 
@@ -125,6 +130,21 @@ module "vpc" {
   public_subnets   = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
   private_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 3)]
   database_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 6)]
+
+  tags = local.tags
+}
+
+module "kms" {
+  source  = "terraform-aws-modules/kms/aws"
+  version = "~> 2.0"
+
+  deletion_window_in_days = 7
+  description             = "KMS key for ${local.name} cluster activity stream."
+  enable_key_rotation     = true
+  is_enabled              = true
+  key_usage               = "ENCRYPT_DECRYPT"
+
+  aliases = [local.name]
 
   tags = local.tags
 }

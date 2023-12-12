@@ -54,6 +54,7 @@ resource "aws_rds_cluster" "this" {
   db_cluster_parameter_group_name     = var.create_db_cluster_parameter_group ? aws_rds_cluster_parameter_group.this[0].id : var.db_cluster_parameter_group_name
   db_instance_parameter_group_name    = var.allow_major_version_upgrade ? var.db_cluster_db_instance_parameter_group_name : null
   db_subnet_group_name                = local.db_subnet_group_name
+  delete_automated_backups            = var.delete_automated_backups
   deletion_protection                 = var.deletion_protection
   enable_global_write_forwarding      = var.enable_global_write_forwarding
   enabled_cloudwatch_logs_exports     = var.enabled_cloudwatch_logs_exports
@@ -162,7 +163,7 @@ resource "aws_rds_cluster_instance" "this" {
   ca_cert_identifier                    = var.ca_cert_identifier
   cluster_identifier                    = aws_rds_cluster.this[0].id
   copy_tags_to_snapshot                 = try(each.value.copy_tags_to_snapshot, var.copy_tags_to_snapshot)
-  db_parameter_group_name               = var.create_db_parameter_group ? aws_db_parameter_group.this[0].id : var.db_parameter_group_name
+  db_parameter_group_name               = var.create_db_parameter_group ? aws_db_parameter_group.this[0].id : try(each.value.db_parameter_group_name, var.db_parameter_group_name)
   db_subnet_group_name                  = local.db_subnet_group_name
   engine                                = var.engine
   engine_version                        = var.engine_version
@@ -411,4 +412,19 @@ resource "aws_cloudwatch_log_group" "this" {
   kms_key_id        = var.cloudwatch_log_group_kms_key_id
 
   tags = var.tags
+}
+
+################################################################################
+# Cluster Activity Stream
+################################################################################
+
+resource "aws_rds_cluster_activity_stream" "this" {
+  count = local.create && var.create_db_cluster_activity_stream ? 1 : 0
+
+  resource_arn                        = aws_rds_cluster.this[0].arn
+  mode                                = var.db_cluster_activity_stream_mode
+  kms_key_id                          = var.db_cluster_activity_stream_kms_key_id
+  engine_native_audit_fields_included = var.engine_native_audit_fields_included
+
+  depends_on = [aws_rds_cluster_instance.this]
 }

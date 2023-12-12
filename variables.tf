@@ -79,9 +79,9 @@ variable "availability_zones" {
 }
 
 variable "backup_retention_period" {
-  description = "The days to retain backups for. Default `7`"
+  description = "The days to retain backups for"
   type        = number
-  default     = 7
+  default     = null
 }
 
 variable "backtrack_window" {
@@ -117,6 +117,12 @@ variable "db_cluster_instance_class" {
 variable "db_cluster_db_instance_parameter_group_name" {
   description = "Instance parameter group to associate with all instances of the DB cluster. The `db_cluster_db_instance_parameter_group_name` is only valid in combination with `allow_major_version_upgrade`"
   type        = string
+  default     = null
+}
+
+variable "delete_automated_backups" {
+  description = "Specifies whether to remove automated backups immediately after the DB cluster is deleted"
+  type        = bool
   default     = null
 }
 
@@ -295,7 +301,7 @@ variable "storage_encrypted" {
 }
 
 variable "storage_type" {
-  description = "Specifies the storage type to be associated with the DB cluster. (This setting is required to create a Multi-AZ DB cluster). Valid values: `io1`, Default: `io1`"
+  description = "Determines the storage type for the DB cluster. Optional for Single-AZ, required for Multi-AZ DB clusters. Valid values for Single-AZ: `aurora`, `\"\"` (default, both refer to Aurora Standard), `aurora-iopt1` (Aurora I/O Optimized). Valid values for Multi-AZ: `io1` (default)."
   type        = string
   default     = null
 }
@@ -682,4 +688,32 @@ variable "cloudwatch_log_group_kms_key_id" {
   description = "The ARN of the KMS Key to use when encrypting log data"
   type        = string
   default     = null
+}
+
+################################################################################
+# Cluster Activity Stream
+################################################################################
+
+variable "create_db_cluster_activity_stream" {
+  description = "Determines whether a cluster activity stream is created."
+  type        = bool
+  default     = false
+}
+
+variable "db_cluster_activity_stream_mode" {
+  description = "Specifies the mode of the database activity stream. Database events such as a change or access generate an activity stream event. One of: sync, async"
+  type        = string
+  default     = null
+}
+
+variable "db_cluster_activity_stream_kms_key_id" {
+  description = "The AWS KMS key identifier for encrypting messages in the database activity stream"
+  type        = string
+  default     = null
+}
+
+variable "engine_native_audit_fields_included" {
+  description = "Specifies whether the database activity stream includes engine-native audit fields. This option only applies to an Oracle DB instance. By default, no engine-native audit fields are included"
+  type        = bool
+  default     = false
 }
