@@ -138,6 +138,12 @@ variable "enable_global_write_forwarding" {
   default     = null
 }
 
+variable "enable_local_write_forwarding" {
+  description = "Whether read replicas can forward write operations to the writer DB instance in the DB cluster. By default, write operations aren't allowed on reader DB instances."
+  type        = bool
+  default     = null
+}
+
 variable "enabled_cloudwatch_logs_exports" {
   description = "Set of log types to export to cloudwatch. If omitted, no logs will be exported. The following log types are supported: `audit`, `error`, `general`, `slowquery`, `postgresql`"
   type        = list(string)
@@ -183,6 +189,18 @@ variable "global_cluster_identifier" {
 variable "iam_database_authentication_enabled" {
   description = "Specifies whether or mappings of AWS Identity and Access Management (IAM) accounts to database accounts is enabled"
   type        = bool
+  default     = null
+}
+
+variable "domain" {
+  description = "The ID of the Directory Service Active Directory domain to create the instance in"
+  type        = string
+  default     = null
+}
+
+variable "domain_iam_role_name" {
+  description = "(Required if domain is provided) The name of the IAM role to be used when making API calls to the Directory Service"
+  type        = string
   default     = null
 }
 
@@ -690,6 +708,18 @@ variable "cloudwatch_log_group_kms_key_id" {
   default     = null
 }
 
+variable "cloudwatch_log_group_skip_destroy" {
+  description = "Set to true if you do not wish the log group (and any logs it may contain) to be deleted at destroy time, and instead just remove the log group from the Terraform state"
+  type        = bool
+  default     = null
+}
+
+variable "cloudwatch_log_group_class" {
+  description = "Specified the log class of the log group. Possible values are: STANDARD or INFREQUENT_ACCESS"
+  type        = string
+  default     = null
+}
+
 ################################################################################
 # Cluster Activity Stream
 ################################################################################
@@ -716,4 +746,38 @@ variable "engine_native_audit_fields_included" {
   description = "Specifies whether the database activity stream includes engine-native audit fields. This option only applies to an Oracle DB instance. By default, no engine-native audit fields are included"
   type        = bool
   default     = false
+}
+
+################################################################################
+# Managed Secret Rotation
+################################################################################
+
+variable "manage_master_user_password_rotation" {
+  description = "Whether to manage the master user password rotation. Setting this value to false after previously having been set to true will disable automatic rotation."
+  type        = bool
+  default     = false
+}
+
+variable "master_user_password_rotate_immediately" {
+  description = "Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window."
+  type        = bool
+  default     = null
+}
+
+variable "master_user_password_rotation_automatically_after_days" {
+  description = "Specifies the number of days between automatic scheduled rotations of the secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
+  type        = number
+  default     = null
+}
+
+variable "master_user_password_rotation_duration" {
+  description = "The length of the rotation window in hours. For example, 3h for a three hour window."
+  type        = string
+  default     = null
+}
+
+variable "master_user_password_rotation_schedule_expression" {
+  description = "A cron() or rate() expression that defines the schedule for rotating your secret. Either `master_user_password_rotation_automatically_after_days` or `master_user_password_rotation_schedule_expression` must be specified"
+  type        = string
+  default     = null
 }

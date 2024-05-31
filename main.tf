@@ -57,6 +57,7 @@ resource "aws_rds_cluster" "this" {
   delete_automated_backups            = var.delete_automated_backups
   deletion_protection                 = var.deletion_protection
   enable_global_write_forwarding      = var.enable_global_write_forwarding
+  enable_local_write_forwarding       = var.enable_local_write_forwarding
   enabled_cloudwatch_logs_exports     = var.enabled_cloudwatch_logs_exports
   enable_http_endpoint                = var.enable_http_endpoint
   engine                              = var.engine
@@ -64,6 +65,8 @@ resource "aws_rds_cluster" "this" {
   engine_version                      = var.engine_version
   final_snapshot_identifier           = var.final_snapshot_identifier
   global_cluster_identifier           = var.global_cluster_identifier
+  domain                              = var.domain
+  domain_iam_role_name                = var.domain_iam_role_name
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   # iam_roles has been removed from this resource and instead will be used with aws_rds_cluster_role_association below to avoid conflicts per docs
   iops                          = var.iops
@@ -75,7 +78,7 @@ resource "aws_rds_cluster" "this" {
   network_type                  = var.network_type
   port                          = local.port
   preferred_backup_window       = local.is_serverless ? null : var.preferred_backup_window
-  preferred_maintenance_window  = local.is_serverless ? null : var.preferred_maintenance_window
+  preferred_maintenance_window  = var.preferred_maintenance_window
   replication_source_identifier = var.replication_source_identifier
 
   dynamic "restore_to_point_in_time" {
@@ -235,7 +238,7 @@ data "aws_iam_policy_document" "monitoring_rds_assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["monitoring.rds.${data.aws_partition.current.dns_suffix}"]
+      identifiers = ["monitoring.rds.amazonaws.com"]
     }
   }
 }
@@ -278,6 +281,12 @@ resource "aws_appautoscaling_target" "this" {
   service_namespace  = "rds"
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      tags_all,
+    ]
+  }
 }
 
 resource "aws_appautoscaling_policy" "this" {
@@ -410,6 +419,8 @@ resource "aws_cloudwatch_log_group" "this" {
   name              = "/aws/rds/cluster/${var.name}/${each.value}"
   retention_in_days = var.cloudwatch_log_group_retention_in_days
   kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  skip_destroy      = var.cloudwatch_log_group_skip_destroy
+  log_group_class   = var.cloudwatch_log_group_class
 
   tags = var.tags
 }
@@ -427,4 +438,21 @@ resource "aws_rds_cluster_activity_stream" "this" {
   engine_native_audit_fields_included = var.engine_native_audit_fields_included
 
   depends_on = [aws_rds_cluster_instance.this]
+}
+
+################################################################################
+# Managed Secret Rotation
+################################################################################
+
+resource "aws_secretsmanager_secret_rotation" "this" {
+  count = local.create && var.manage_master_user_password && var.manage_master_user_password_rotation ? 1 : 0
+
+  secret_id          = aws_rds_cluster.this[0].master_user_secret[0].secret_arn
+  rotate_immediately = var.master_user_password_rotate_immediately
+
+  rotation_rules {
+    automatically_after_days = var.master_user_password_rotation_automatically_after_days
+    duration                 = var.master_user_password_rotation_duration
+    schedule_expression      = var.master_user_password_rotation_schedule_expression
+  }
 }

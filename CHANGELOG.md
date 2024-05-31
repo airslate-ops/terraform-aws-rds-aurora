@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.4.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.3.1...v9.4.0) (2024-05-27)
+
+
+### Features
+
+* Cloudwatch log group `skip_destroy` and `log_group_class` ([#449](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/449)) ([683c069](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/683c06916598028af568e2fc05738a0224c3b393))
+
+## [9.3.1](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.3.0...v9.3.1) (2024-03-26)
+
+
+### Bug Fixes
+
+* Do not create dynamic DNS suffix for service principals ([#442](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/442)) ([b79c17a](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/b79c17a0eaa1513f0949316b2f38b2becbb6add6))
+
+## [9.3.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.2.1...v9.3.0) (2024-03-22)
+
+
+### Features
+
+* Support for `enable_local_write_forwarding` ([#441](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/441)) ([8c6039e](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/8c6039e9e0cf4d357b7f2af72c6551e5239e9f76))
+
+## [9.2.1](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.2.0...v9.2.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* Update CI workflow versions to remove deprecated runtime warnings ([#435](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/435)) ([98dd426](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/98dd426b9c0a7814921fc4239cf61a5401b488f6))
+
+## [9.2.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.1.0...v9.2.0) (2024-03-05)
+
+
+### Features
+
+* Secretsmanager secret rotation for master user password ([#433](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/433)) ([ae752de](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/ae752de086b9ab6f9a1178024d1e99dce9852d37))
+
+## [9.1.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.0.2...v9.1.0) (2024-02-16)
+
+
+### Features
+
+* Add `domain` support ([#429](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/429)) ([29bb9d6](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/29bb9d68565cc1ecc73c142b14d61723a275ee30))
+
+### [9.0.2](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.0.1...v9.0.2) (2024-02-15)
+
+
+### Bug Fixes
+
+* Ignore `tags_all` for `aws_appautoscaling_target` ([#431](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/431)) ([fa8caad](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/fa8caaddeb294e7898c081a63f2a144920a833e1))
+
+### [9.0.1](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.0.0...v9.0.1) (2024-02-15)
+
+
+### Bug Fixes
+
+* Allow Serverless maintenance windows ([#427](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/427)) ([c7d2e77](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/c7d2e776cadc52d4ad59a8f8e1e5fbfe733f1f56))
+
 ## [9.0.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v8.5.0...v9.0.0) (2023-12-11)
 
 
@@ -531,7 +587,7 @@ All notable changes to this project will be documented in this file
 - Add cluster ARN output as 'this_rds_cluster_arn' ([#48](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/48))
 - Upgraded module to support Terraform 0.12 ([#45](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/45))
 
-### 
+###
 
 on ../../modules/aws-rds-aurora/main.tf line 4, in locals:
 
@@ -579,7 +635,7 @@ when calling import with this module in the configuration.
 - Add cluster ARN output as 'this_rds_cluster_arn' ([#48](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/48))
 - Upgraded module to support Terraform 0.12 ([#45](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/45))
 
-### 
+###
 
 on ../../modules/aws-rds-aurora/main.tf line 4, in locals:
 
