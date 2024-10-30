@@ -56,6 +56,7 @@ module "aurora_postgresql" {
     min_capacity             = 2
     max_capacity             = 16
     seconds_until_auto_pause = 300
+    seconds_before_timeout   = 600
     timeout_action           = "ForceApplyCapacityChange"
   }
 
@@ -152,7 +153,7 @@ module "aurora_mysql_v2" {
 
 data "aws_rds_engine_version" "postgresql" {
   engine  = "aurora-postgresql"
-  version = "14.5"
+  version = "14.8"
 }
 
 module "aurora_postgresql_v2" {
@@ -177,6 +178,8 @@ module "aurora_postgresql_v2" {
 
   apply_immediately   = true
   skip_final_snapshot = true
+
+  enable_http_endpoint = true
 
   serverlessv2_scaling_configuration = {
     min_capacity = 2

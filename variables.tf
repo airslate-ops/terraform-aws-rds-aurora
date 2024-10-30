@@ -90,9 +90,33 @@ variable "backtrack_window" {
   default     = null
 }
 
+variable "cluster_ca_cert_identifier" {
+  description = "The CA certificate identifier to use for the DB cluster's server certificate. Currently only supported for multi-az DB clusters"
+  type        = string
+  default     = null
+}
+
 variable "cluster_members" {
   description = "List of RDS Instances that are a part of this cluster"
   type        = list(string)
+  default     = null
+}
+
+variable "cluster_performance_insights_enabled" {
+  description = "Valid only for Non-Aurora Multi-AZ DB Clusters. Enables Performance Insights for the RDS Cluster"
+  type        = bool
+  default     = null
+}
+
+variable "cluster_performance_insights_kms_key_id" {
+  description = "Valid only for Non-Aurora Multi-AZ DB Clusters. Specifies the KMS Key ID to encrypt Performance Insights data. If not specified, the default RDS KMS key will be used (aws/rds)"
+  type        = string
+  default     = null
+}
+
+variable "cluster_performance_insights_retention_period" {
+  description = "Valid only for Non-Aurora Multi-AZ DB Clusters. Specifies the amount of time to retain performance insights data for. Defaults to 7 days if Performance Insights are enabled. Valid values are 7, month * 31 (where month is a number of months from 1-23), and 731"
+  type        = number
   default     = null
 }
 
@@ -170,6 +194,12 @@ variable "engine_mode" {
 
 variable "engine_version" {
   description = "The database engine version. Updating this argument results in an outage"
+  type        = string
+  default     = null
+}
+
+variable "engine_lifecycle_support" {
+  description = "The life cycle type for this DB instance. This setting is valid for cluster types Aurora DB clusters and Multi-AZ DB clusters. Valid values are `open-source-rds-extended-support`, `open-source-rds-extended-support-disabled`. Default value is `open-source-rds-extended-support`."
   type        = string
   default     = null
 }
@@ -718,6 +748,12 @@ variable "cloudwatch_log_group_class" {
   description = "Specified the log class of the log group. Possible values are: STANDARD or INFREQUENT_ACCESS"
   type        = string
   default     = null
+}
+
+variable "cloudwatch_log_group_tags" {
+  description = "Additional tags for the CloudWatch log group(s)"
+  type        = map(string)
+  default     = {}
 }
 
 ################################################################################

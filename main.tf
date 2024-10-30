@@ -45,6 +45,7 @@ resource "aws_rds_cluster" "this" {
   availability_zones                  = var.availability_zones
   backup_retention_period             = var.backup_retention_period
   backtrack_window                    = local.backtrack_window
+  ca_certificate_identifier           = var.cluster_ca_cert_identifier
   cluster_identifier                  = var.cluster_use_name_prefix ? null : var.name
   cluster_identifier_prefix           = var.cluster_use_name_prefix ? "${var.name}-" : null
   cluster_members                     = var.cluster_members
@@ -63,23 +64,27 @@ resource "aws_rds_cluster" "this" {
   engine                              = var.engine
   engine_mode                         = var.engine_mode
   engine_version                      = var.engine_version
+  engine_lifecycle_support            = var.engine_lifecycle_support
   final_snapshot_identifier           = var.final_snapshot_identifier
   global_cluster_identifier           = var.global_cluster_identifier
   domain                              = var.domain
   domain_iam_role_name                = var.domain_iam_role_name
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   # iam_roles has been removed from this resource and instead will be used with aws_rds_cluster_role_association below to avoid conflicts per docs
-  iops                          = var.iops
-  kms_key_id                    = var.kms_key_id
-  manage_master_user_password   = var.global_cluster_identifier == null && var.manage_master_user_password ? var.manage_master_user_password : null
-  master_user_secret_kms_key_id = var.global_cluster_identifier == null && var.manage_master_user_password ? var.master_user_secret_kms_key_id : null
-  master_password               = var.is_primary_cluster && !var.manage_master_user_password ? var.master_password : null
-  master_username               = var.is_primary_cluster ? var.master_username : null
-  network_type                  = var.network_type
-  port                          = local.port
-  preferred_backup_window       = local.is_serverless ? null : var.preferred_backup_window
-  preferred_maintenance_window  = var.preferred_maintenance_window
-  replication_source_identifier = var.replication_source_identifier
+  iops                                  = var.iops
+  kms_key_id                            = var.kms_key_id
+  manage_master_user_password           = var.global_cluster_identifier == null && var.manage_master_user_password ? var.manage_master_user_password : null
+  master_user_secret_kms_key_id         = var.global_cluster_identifier == null && var.manage_master_user_password ? var.master_user_secret_kms_key_id : null
+  master_password                       = var.is_primary_cluster && !var.manage_master_user_password ? var.master_password : null
+  master_username                       = var.is_primary_cluster ? var.master_username : null
+  network_type                          = var.network_type
+  performance_insights_enabled          = var.cluster_performance_insights_enabled
+  performance_insights_kms_key_id       = var.cluster_performance_insights_kms_key_id
+  performance_insights_retention_period = var.cluster_performance_insights_retention_period
+  port                                  = local.port
+  preferred_backup_window               = local.is_serverless ? null : var.preferred_backup_window
+  preferred_maintenance_window          = var.preferred_maintenance_window
+  replication_source_identifier         = var.replication_source_identifier
 
   dynamic "restore_to_point_in_time" {
     for_each = length(var.restore_to_point_in_time) > 0 ? [var.restore_to_point_in_time] : []
@@ -87,7 +92,8 @@ resource "aws_rds_cluster" "this" {
     content {
       restore_to_time            = try(restore_to_point_in_time.value.restore_to_time, null)
       restore_type               = try(restore_to_point_in_time.value.restore_type, null)
-      source_cluster_identifier  = restore_to_point_in_time.value.source_cluster_identifier
+      source_cluster_identifier  = try(restore_to_point_in_time.value.source_cluster_identifier, null)
+      source_cluster_resource_id = try(restore_to_point_in_time.value.source_cluster_resource_id, null)
       use_latest_restorable_time = try(restore_to_point_in_time.value.use_latest_restorable_time, null)
     }
   }
@@ -112,6 +118,7 @@ resource "aws_rds_cluster" "this" {
       max_capacity             = try(scaling_configuration.value.max_capacity, null)
       min_capacity             = try(scaling_configuration.value.min_capacity, null)
       seconds_until_auto_pause = try(scaling_configuration.value.seconds_until_auto_pause, null)
+      seconds_before_timeout   = try(scaling_configuration.value.seconds_before_timeout, null)
       timeout_action           = try(scaling_configuration.value.timeout_action, null)
     }
   }
@@ -348,6 +355,7 @@ resource "aws_security_group_rule" "this" {
   ipv6_cidr_blocks         = try(each.value.ipv6_cidr_blocks, null)
   prefix_list_ids          = try(each.value.prefix_list_ids, null)
   source_security_group_id = try(each.value.source_security_group_id, null)
+  self                     = try(each.value.self, null)
 }
 
 ################################################################################
@@ -422,7 +430,7 @@ resource "aws_cloudwatch_log_group" "this" {
   skip_destroy      = var.cloudwatch_log_group_skip_destroy
   log_group_class   = var.cloudwatch_log_group_class
 
-  tags = var.tags
+  tags = merge(var.tags, var.cloudwatch_log_group_tags)
 }
 
 ################################################################################

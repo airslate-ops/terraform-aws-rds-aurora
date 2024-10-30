@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.10.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.9.1...v9.10.0) (2024-10-15)
+
+
+### Features
+
+* Add `cloudwatch_log_group_tags` parameter for log group tags ([#472](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/472)) ([0962ab8](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/0962ab868a7967e03d16fca5f7f25cdf580bd13d))
+
+
+### Bug Fixes
+
+* Update CI workflow versions to latest ([#471](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/471)) ([a11c970](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/a11c97093dae1469722d503428953cfec0e16aa5))
+
+## [9.9.1](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.9.0...v9.9.1) (2024-08-24)
+
+
+### Bug Fixes
+
+* AWS provider bump for bugfix on `enable_http_endpoint` ([#465](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/465)) ([f64d755](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/f64d755c46e6ca45a5f3d21d6578a14834e8b5e9))
+
+## [9.9.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.8.0...v9.9.0) (2024-08-14)
+
+
+### Features
+
+* Add "self" attribute to the security group rule ([#463](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/463)) ([6e4b82c](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/6e4b82c706c3587505cd50a992fa28b807eefcec))
+
+## [9.8.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.7.0...v9.8.0) (2024-08-05)
+
+
+### Features
+
+* Multi-AZ Cluster performance insights ([#462](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/462)) ([546c74a](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/546c74a87c1a1c09e486153651ccb4a6719cb39e))
+
+## [9.7.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.6.0...v9.7.0) (2024-07-27)
+
+
+### Features
+
+* Support for `scaling_configuration.seconds_before_timeout` in Serverless V1 ([#461](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/461)) ([d798147](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/d7981474a4ec2a0a53900c41d25b31329fab2afd))
+
+## [9.6.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.5.0...v9.6.0) (2024-07-20)
+
+
+### Features
+
+* Support `engine_lifecycle_support` ([#459](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/459)) ([466f090](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/466f090b277e92b6d26c00af97ab55e75439f736))
+
+## [9.5.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.4.0...v9.5.0) (2024-07-12)
+
+
+### Features
+
+* Multi-az rds cluster ca cert identifier ([#458](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/issues/458)) ([d320348](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/commit/d320348984db35c28ca8d272407e5c45ead983ae))
+
 ## [9.4.0](https://github.com/terraform-aws-modules/terraform-aws-rds-aurora/compare/v9.3.1...v9.4.0) (2024-05-27)
 
 
